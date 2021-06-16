@@ -266,7 +266,7 @@ static void ReadOptions(int argc, char **argv)
         g_options.count = utils::ParseInt(opt.getOption(itemCount));
         if (g_options.count <= 0)
             throw std::runtime_error("Invalid number of UEs");
-        if (g_options.count > 512)
+        if (g_options.count > 51200)
             throw std::runtime_error("Number of UEs is too big");
     }
     else
