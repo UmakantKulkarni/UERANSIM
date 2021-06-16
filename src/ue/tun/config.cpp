@@ -39,7 +39,7 @@
 #include <utils/libc_error.hpp>
 
 #define ROUTING_TABLE_PREFIX "rt_"
-#define MAX_INTERFACE_COUNT 1024
+#define MAX_INTERFACE_COUNT 102400
 
 static std::mutex configMutex;
 
