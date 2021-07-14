@@ -132,9 +132,9 @@ void UeAppTask::receiveStatusUpdate(NmUeStatusUpdate &msg)
         else
         {
             std::string ipAddress = utils::OctetStringToIp(session->pduAddress->pduAddressInformation);
-            m_logger->info("PCCSSSSSS Skipped setting TUN interface for UE [%s].", ipAddress.c_str());
+            m_logger->info("PCS Skipped setting TUN interface for UE [%s].", ipAddress.c_str());
             std::ofstream outfile;
-            outfile.open("output.txt", std::ios_base::app);
+            outfile.open("pcs_ueips.txt", std::ios_base::app);
             outfile << ipAddress.c_str() << std::endl;
         }
         return;
