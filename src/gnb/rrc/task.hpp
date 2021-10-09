@@ -66,6 +66,7 @@ class GnbRrcTask : public NtsTask
 
   private:
     /* Management */
+    RrcUeContext *tryFindByInitialRandomId(int64_t id);
     int getNextTid();
 
     /* Handlers */

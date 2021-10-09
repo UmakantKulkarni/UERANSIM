@@ -55,7 +55,7 @@ void NgapTask::onLoop()
         switch (w->present)
         {
         case NmGnbRrcToNgap::INITIAL_NAS_DELIVERY: {
-            handleInitialNasTransport(w->ueId, w->pdu, w->rrcEstablishmentCause, w->sTmsi);
+            handleInitialNasTransport(w->ueId, w->pdu, w->rrcEstablishmentCause);
             break;
         }
         case NmGnbRrcToNgap::UPLINK_NAS_DELIVERY: {

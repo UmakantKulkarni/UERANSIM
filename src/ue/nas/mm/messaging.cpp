@@ -363,18 +363,13 @@ bool NasMm::checkForReplay(const nas::SecuredMmMessage &msg)
 {
     int n = static_cast<int>(msg.sequenceNumber);
 
-    if (m_usim->m_currentNsCtx)
-    {
-        auto &lastNasSequenceNums = m_usim->m_currentNsCtx->lastNasSequenceNums;
+    for (int seq : m_lastNasSequenceNums)
+        if (seq == n)
+            return false;
 
-        for (int seq : lastNasSequenceNums)
-            if (seq == n)
-                return false;
-
-        lastNasSequenceNums.push_back(n);
-        while (lastNasSequenceNums.size() > 16)
-            lastNasSequenceNums.pop_front();
-    }
+    m_lastNasSequenceNums.push_back(n);
+    while (m_lastNasSequenceNums.size() > 16)
+        m_lastNasSequenceNums.pop_front();
 
     return true;
 }
