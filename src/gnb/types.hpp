@@ -8,6 +8,8 @@
 
 #pragma once
 
+#include <set>
+
 #include <lib/app/monitor.hpp>
 #include <lib/asn/utils.hpp>
 #include <utils/common_types.hpp>
@@ -97,7 +99,7 @@ struct NgapAmfContext
     std::string address{};
     uint16_t port{};
     std::string amfName{};
-    long relativeCapacity{};
+    int64_t relativeCapacity{};
     EAmfState state{};
     OverloadInfo overloadInfo{};
     std::vector<ServedGuami *> servedGuamiList{};
@@ -132,6 +134,7 @@ struct NgapUeContext
     int uplinkStream{};
     int downlinkStream{};
     AggregateMaximumBitRate ueAmbr{};
+    std::set<int> pduSessions{};
 
     explicit NgapUeContext(int ctxId) : ctxId(ctxId)
     {
@@ -142,8 +145,10 @@ struct RrcUeContext
 {
     const int ueId{};
 
-    int64_t initialRandomId = -1;
-    long establishmentCause{};
+    int64_t initialId = -1; // 39-bit value, or -1
+    bool isInitialIdSTmsi{}; // TMSI-part-1 or a random value
+    int64_t establishmentCause{};
+    std::optional<GutiMobileIdentity> sTmsi{};
 
     explicit RrcUeContext(const int ueId) : ueId(ueId)
     {
@@ -304,7 +309,7 @@ struct GnbConfig
     int tac{};
     NetworkSlice nssai{};
     std::vector<GnbAmfConfig> amfConfigs{};
-    std::string portalIp{};
+    std::string linkIp{};
     std::string ngapIp{};
     std::string gtpIp{};
     std::optional<std::string> gtpAdvertiseIp{};

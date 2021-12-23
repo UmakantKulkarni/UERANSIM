@@ -13,17 +13,17 @@
 #include <atomic>
 #include <cctype>
 #include <chrono>
-#include <random>
 #include <regex>
 #include <sstream>
 #include <stdexcept>
 #include <thread>
 
+#include <arpa/inet.h>
 #include <unistd.h>
 
 static_assert(sizeof(char) == sizeof(uint8_t));
 static_assert(sizeof(int) == sizeof(uint32_t));
-static_assert(sizeof(long) == sizeof(uint64_t));
+static_assert(sizeof(long) == sizeof(uint32_t) || sizeof(long) == sizeof(uint64_t));
 static_assert(sizeof(float) == sizeof(uint32_t));
 static_assert(sizeof(double) == sizeof(uint64_t));
 static_assert(sizeof(long long) == sizeof(uint64_t));
@@ -32,7 +32,7 @@ static std::atomic<int> g_idCounter = 1;
 
 static bool IPv6FromString(const char *szAddress, uint8_t *address)
 {
-    auto asciiToHex = [](char c) {
+    auto asciiToHex = [](char c) -> int {
         c |= 0x20;
         if (c >= '0' && c <= '9')
             return c - '0';
@@ -75,13 +75,13 @@ static bool IPv6FromString(const char *szAddress, uint8_t *address)
         }
         else
         {
-            int8_t val = asciiToHex(szAddress[i]);
+            int val = asciiToHex(szAddress[i]);
             if (val == -1)
                 return false;
             else
             {
                 acc <<= 4;
-                acc |= val;
+                acc |= static_cast<uint8_t>(val);
             }
         }
         if (szAddress[i] == '\0')
@@ -262,27 +262,6 @@ int utils::ParseInt(const char *str)
     return n;
 }
 
-uint64_t utils::Random64()
-{
-    static bool initiated = false;
-    static std::random_device randomDevice{};
-    static std::mt19937_64 randomEngine(randomDevice());
-
-    if (!initiated)
-    {
-        randomEngine.seed(std::chrono::high_resolution_clock::now().time_since_epoch().count());
-        initiated = true;
-    }
-
-    while (true)
-    {
-        std::uniform_int_distribution<uint64_t> distribution;
-        uint64_t r = distribution(randomEngine);
-        if (r != 0)
-            return r;
-    }
-}
-
 void utils::Sleep(int ms)
 {
     std::this_thread::sleep_for(std::chrono::milliseconds(ms));
@@ -345,4 +324,9 @@ void utils::Trim(std::stringstream &s)
     str = s.str();
     Trim(str);
     s.str(str);
+}
+
+bool utils::IsLittleEndian()
+{
+    return htonl(1453) != 1453;
 }
