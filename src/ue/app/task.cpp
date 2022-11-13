@@ -11,6 +11,8 @@
 #include <lib/nas/utils.hpp>
 #include <ue/nas/task.hpp>
 #include <ue/rls/task.hpp>
+#include <fstream>
+#include <cstring>
 #include <ue/tun/tun.hpp>
 #include <utils/common.hpp>
 #include <utils/constants.hpp>
@@ -122,7 +124,18 @@ void UeAppTask::receiveStatusUpdate(NmUeStatusUpdate &msg)
     {
         auto *session = msg.pduSession;
 
-        setupTunInterface(session);
+        if (strcmp(getenv("PCS_SETUP_TUN_INTF"), "true") == 0)
+        {
+            setupTunInterface(session);
+        }
+        else
+        {
+            std::string ipAddress = utils::OctetStringToIp(session->pduAddress->pduAddressInformation);
+            m_logger->info("PCS Skipped setting TUN interface for UE [%s].", ipAddress.c_str());
+            std::ofstream outfile;
+            outfile.open("pcs_ueips.txt", std::ios_base::app);
+            outfile << ipAddress.c_str() << std::endl;
+        }
         return;
     }
 
