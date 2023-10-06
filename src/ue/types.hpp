@@ -93,6 +93,10 @@ struct UeConfig
 {
     /* Read from config file */
     std::optional<Supi> supi{};
+    int protectionScheme;
+    int homeNetworkPublicKeyId;
+    OctetString homeNetworkPublicKey{};
+    std::optional<std::string> routingIndicator{};
     Plmn hplmn{};
     OctetString key{};
     OctetString opC{};
