@@ -111,6 +111,7 @@ struct UeConfig
     NetworkSlice defaultConfiguredNssai{};
     NetworkSlice configuredNssai{};
     std::optional<std::string> tunName{};
+    std::optional<std::string> tunNetmask{};
 
     struct
     {
@@ -401,6 +402,7 @@ struct UeKeys
     OctetString kAmf{};
     OctetString kNasInt{};
     OctetString kNasEnc{};
+    OctetString kAkma{};
 
     [[nodiscard]] UeKeys deepCopy() const
     {
